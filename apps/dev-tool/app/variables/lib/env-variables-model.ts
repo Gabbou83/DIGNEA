@@ -411,7 +411,6 @@ export const envVariables: EnvVariableModel[] = [
     name: 'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     description: 'Your Supabase anonymous API key.',
     category: 'Supabase',
-    required: true,
     type: 'string',
     deprecated: {
       reason: 'Replaced by new JWT signing key system',
@@ -450,7 +449,6 @@ export const envVariables: EnvVariableModel[] = [
     description: 'Your Supabase service role key (keep this secret!).',
     category: 'Supabase',
     secret: true,
-    required: true,
     type: 'string',
     deprecated: {
       reason: 'Renamed for consistency with new JWT signing key system',
