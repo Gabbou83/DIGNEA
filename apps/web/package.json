@@ -43,6 +43,7 @@
     "@kit/database-webhooks": "workspace:*",
     "@kit/email-templates": "workspace:*",
     "@kit/i18n": "workspace:*",
+    "@kit/k10": "workspace:*",
     "@kit/mailers": "workspace:*",
     "@kit/monitoring": "workspace:*",
     "@kit/next": "workspace:*",

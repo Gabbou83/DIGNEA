@@ -48,6 +48,7 @@
     "@turbo/gen": "^2.7.0",
     "cross-env": "^10.0.0",
     "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
     "turbo": "2.7.3",
     "typescript": "^5.9.3"
   }
