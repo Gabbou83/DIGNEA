@@ -7,30 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -138,6 +118,47 @@ export type Database = {
           },
         ]
       }
+      availability: {
+        Row: {
+          id: string
+          notes: string | null
+          reported_at: string | null
+          reported_by: string | null
+          rpa_id: string
+          source: Database["public"]["Enums"]["availability_source"]
+          unit_types: Json | null
+          units_available: number
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          reported_at?: string | null
+          reported_by?: string | null
+          rpa_id: string
+          source: Database["public"]["Enums"]["availability_source"]
+          unit_types?: Json | null
+          units_available: number
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          reported_at?: string | null
+          reported_by?: string | null
+          rpa_id?: string
+          source?: Database["public"]["Enums"]["availability_source"]
+          unit_types?: Json | null
+          units_available?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_rpa_id_fkey"
+            columns: ["rpa_id"]
+            isOneToOne: false
+            referencedRelation: "rpas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       billing_customers: {
         Row: {
           account_id: string
@@ -202,6 +223,132 @@ export type Database = {
           enable_account_billing?: boolean
           enable_team_account_billing?: boolean
           enable_team_accounts?: boolean
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
+          contact_type: Database["public"]["Enums"]["contact_type"]
+          created_at: string | null
+          follow_up_date: string | null
+          id: string
+          message: string | null
+          outcome: string | null
+          request_id: string | null
+          requester_email: string | null
+          requester_id: string | null
+          requester_phone: string | null
+          responded_at: string | null
+          responded_by: string | null
+          response: string | null
+          response_time_minutes: number | null
+          rpa_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          contact_type: Database["public"]["Enums"]["contact_type"]
+          created_at?: string | null
+          follow_up_date?: string | null
+          id?: string
+          message?: string | null
+          outcome?: string | null
+          request_id?: string | null
+          requester_email?: string | null
+          requester_id?: string | null
+          requester_phone?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          response_time_minutes?: number | null
+          rpa_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          contact_type?: Database["public"]["Enums"]["contact_type"]
+          created_at?: string | null
+          follow_up_date?: string | null
+          id?: string
+          message?: string | null
+          outcome?: string | null
+          request_id?: string | null
+          requester_email?: string | null
+          requester_id?: string | null
+          requester_phone?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          response_time_minutes?: number | null
+          rpa_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_rpa_id_fkey"
+            columns: ["rpa_id"]
+            isOneToOne: false
+            referencedRelation: "rpas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      healthcare_profiles: {
+        Row: {
+          can_use_urgent_mode: boolean | null
+          created_at: string | null
+          department: string | null
+          employee_id: string | null
+          id: string
+          is_verified: boolean | null
+          organization_name: string | null
+          organization_type: string | null
+          role: string | null
+          updated_at: string | null
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+          work_email: string | null
+          work_phone: string | null
+        }
+        Insert: {
+          can_use_urgent_mode?: boolean | null
+          created_at?: string | null
+          department?: string | null
+          employee_id?: string | null
+          id?: string
+          is_verified?: boolean | null
+          organization_name?: string | null
+          organization_type?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+          work_email?: string | null
+          work_phone?: string | null
+        }
+        Update: {
+          can_use_urgent_mode?: boolean | null
+          created_at?: string | null
+          department?: string | null
+          employee_id?: string | null
+          id?: string
+          is_verified?: boolean | null
+          organization_name?: string | null
+          organization_type?: string | null
+          role?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          work_email?: string | null
+          work_phone?: string | null
         }
         Relationships: []
       }
@@ -491,6 +638,80 @@ export type Database = {
           },
         ]
       }
+      requests: {
+        Row: {
+          ai_conversation: Json | null
+          budget_max: number | null
+          budget_min: number | null
+          completed_at: string | null
+          created_at: string | null
+          deadline_date: string | null
+          extracted_entities: Json | null
+          id: string
+          location_coordinates: Json | null
+          location_preference: string | null
+          outcome: string | null
+          patient_profile: Json
+          placed_at_rpa_id: string | null
+          requester_contact: Json | null
+          requester_id: string | null
+          requester_type: string
+          status: string | null
+          updated_at: string | null
+          urgency_level: Database["public"]["Enums"]["urgency_level"] | null
+        }
+        Insert: {
+          ai_conversation?: Json | null
+          budget_max?: number | null
+          budget_min?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          deadline_date?: string | null
+          extracted_entities?: Json | null
+          id?: string
+          location_coordinates?: Json | null
+          location_preference?: string | null
+          outcome?: string | null
+          patient_profile: Json
+          placed_at_rpa_id?: string | null
+          requester_contact?: Json | null
+          requester_id?: string | null
+          requester_type: string
+          status?: string | null
+          updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
+        }
+        Update: {
+          ai_conversation?: Json | null
+          budget_max?: number | null
+          budget_min?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          deadline_date?: string | null
+          extracted_entities?: Json | null
+          id?: string
+          location_coordinates?: Json | null
+          location_preference?: string | null
+          outcome?: string | null
+          patient_profile?: Json
+          placed_at_rpa_id?: string | null
+          requester_contact?: Json | null
+          requester_id?: string | null
+          requester_type?: string
+          status?: string | null
+          updated_at?: string | null
+          urgency_level?: Database["public"]["Enums"]["urgency_level"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requests_placed_at_rpa_id_fkey"
+            columns: ["placed_at_rpa_id"]
+            isOneToOne: false
+            referencedRelation: "rpas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           id: number
@@ -531,6 +752,229 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      rpa_profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          permissions: Json | null
+          role: string | null
+          rpa_id: string
+          sms_daily_reminder: boolean | null
+          sms_enabled: boolean | null
+          sms_inquiry_alerts: boolean | null
+          sms_phone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          role?: string | null
+          rpa_id: string
+          sms_daily_reminder?: boolean | null
+          sms_enabled?: boolean | null
+          sms_inquiry_alerts?: boolean | null
+          sms_phone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          role?: string | null
+          rpa_id?: string
+          sms_daily_reminder?: boolean | null
+          sms_enabled?: boolean | null
+          sms_inquiry_alerts?: boolean | null
+          sms_phone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rpa_profiles_rpa_id_fkey"
+            columns: ["rpa_id"]
+            isOneToOne: false
+            referencedRelation: "rpas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rpas: {
+        Row: {
+          address: string | null
+          amenities: Json | null
+          care_capabilities: Json | null
+          category: number | null
+          city: string | null
+          created_at: string | null
+          description: string | null
+          email: string | null
+          id: string
+          is_active: boolean | null
+          k10_id: string
+          languages_spoken: Json | null
+          last_availability_update: string | null
+          manager_user_id: string | null
+          name: string
+          owner_name: string | null
+          phone: string | null
+          photos: string[] | null
+          postal_code: string | null
+          pricing_details: Json | null
+          pricing_max: number | null
+          pricing_min: number | null
+          rating: number | null
+          region: string | null
+          response_time_hours: number | null
+          search_vector: unknown
+          services: Json | null
+          subscription_id: string | null
+          subscription_plan: string | null
+          total_reviews: number | null
+          total_units: number | null
+          updated_at: string | null
+          virtual_tour_url: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          amenities?: Json | null
+          care_capabilities?: Json | null
+          category?: number | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          k10_id: string
+          languages_spoken?: Json | null
+          last_availability_update?: string | null
+          manager_user_id?: string | null
+          name: string
+          owner_name?: string | null
+          phone?: string | null
+          photos?: string[] | null
+          postal_code?: string | null
+          pricing_details?: Json | null
+          pricing_max?: number | null
+          pricing_min?: number | null
+          rating?: number | null
+          region?: string | null
+          response_time_hours?: number | null
+          search_vector?: unknown
+          services?: Json | null
+          subscription_id?: string | null
+          subscription_plan?: string | null
+          total_reviews?: number | null
+          total_units?: number | null
+          updated_at?: string | null
+          virtual_tour_url?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          amenities?: Json | null
+          care_capabilities?: Json | null
+          category?: number | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean | null
+          k10_id?: string
+          languages_spoken?: Json | null
+          last_availability_update?: string | null
+          manager_user_id?: string | null
+          name?: string
+          owner_name?: string | null
+          phone?: string | null
+          photos?: string[] | null
+          postal_code?: string | null
+          pricing_details?: Json | null
+          pricing_max?: number | null
+          pricing_min?: number | null
+          rating?: number | null
+          region?: string | null
+          response_time_hours?: number | null
+          search_vector?: unknown
+          services?: Json | null
+          subscription_id?: string | null
+          subscription_plan?: string | null
+          total_reviews?: number | null
+          total_units?: number | null
+          updated_at?: string | null
+          virtual_tour_url?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      sms_logs: {
+        Row: {
+          created_at: string | null
+          direction: Database["public"]["Enums"]["sms_direction"]
+          id: string
+          is_processed: boolean | null
+          message: string
+          phone: string
+          processed_at: string | null
+          processing_result: Json | null
+          rpa_id: string | null
+          twilio_error_code: string | null
+          twilio_error_message: string | null
+          twilio_sid: string | null
+          twilio_status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          direction: Database["public"]["Enums"]["sms_direction"]
+          id?: string
+          is_processed?: boolean | null
+          message: string
+          phone: string
+          processed_at?: string | null
+          processing_result?: Json | null
+          rpa_id?: string | null
+          twilio_error_code?: string | null
+          twilio_error_message?: string | null
+          twilio_sid?: string | null
+          twilio_status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          direction?: Database["public"]["Enums"]["sms_direction"]
+          id?: string
+          is_processed?: boolean | null
+          message?: string
+          phone?: string
+          processed_at?: string | null
+          processing_result?: Json | null
+          rpa_id?: string | null
+          twilio_error_code?: string | null
+          twilio_error_message?: string | null
+          twilio_sid?: string | null
+          twilio_status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_logs_rpa_id_fkey"
+            columns: ["rpa_id"]
+            isOneToOne: false
+            referencedRelation: "rpas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscription_items: {
         Row: {
@@ -662,6 +1106,39 @@ export type Database = {
           },
         ]
       }
+      user_profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          onboarding_completed: boolean | null
+          onboarding_step: number | null
+          preferences: Json | null
+          profile_id: string | null
+          updated_at: string | null
+          user_type: Database["public"]["Enums"]["user_type"]
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          onboarding_completed?: boolean | null
+          onboarding_step?: number | null
+          preferences?: Json | null
+          profile_id?: string | null
+          updated_at?: string | null
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          onboarding_completed?: boolean | null
+          onboarding_step?: number | null
+          preferences?: Json | null
+          profile_id?: string | null
+          updated_at?: string | null
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       user_account_workspace: {
@@ -743,7 +1220,7 @@ export type Database = {
         Returns: Json
       }
       create_team_account: {
-        Args: { account_name: string; account_slug?: string }
+        Args: { account_name: string; account_slug?: string; user_id: string }
         Returns: {
           created_at: string | null
           created_by: string | null
@@ -797,8 +1274,28 @@ export type Database = {
         }[]
       }
       get_config: { Args: never; Returns: Json }
+      get_latest_availability: {
+        Args: { p_rpa_id: string }
+        Returns: {
+          reported_at: string
+          source: Database["public"]["Enums"]["availability_source"]
+          unit_types: Json
+          units_available: number
+        }[]
+      }
       get_nonce_status: { Args: { p_id: string }; Returns: Json }
       get_upper_system_role: { Args: never; Returns: string }
+      get_user_profile: {
+        Args: { user_id?: string }
+        Returns: {
+          email: string
+          id: string
+          onboarding_completed: boolean
+          preferences: Json
+          profile_id: string
+          user_type: Database["public"]["Enums"]["user_type"]
+        }[]
+      }
       has_active_subscription: {
         Args: { target_account_id: string }
         Returns: boolean
@@ -847,6 +1344,32 @@ export type Database = {
       revoke_nonce: {
         Args: { p_id: string; p_reason?: string }
         Returns: boolean
+      }
+      search_rpas: {
+        Args: {
+          p_category?: number
+          p_city?: string
+          p_has_availability?: boolean
+          p_limit?: number
+          p_max_price?: number
+          p_min_price?: number
+          p_offset?: number
+          p_region?: string
+          p_search_text?: string
+        }
+        Returns: {
+          category: number
+          city: string
+          distance_km: number
+          id: string
+          last_availability_update: string
+          latest_units_available: number
+          name: string
+          pricing_max: number
+          pricing_min: number
+          rating: number
+          region: string
+        }[]
       }
       team_account_workspace: {
         Args: { account_slug: string }
@@ -954,10 +1477,14 @@ export type Database = {
         | "settings.manage"
         | "members.manage"
         | "invites.manage"
+      autonomy_level: "autonomous" | "semi_autonomous" | "loss_of_independence"
+      availability_source: "sms" | "web" | "api"
       billing_provider: "stripe" | "lemon-squeezy" | "paddle"
+      contact_type: "call" | "message" | "visit_request" | "urgent_broadcast"
       notification_channel: "in_app" | "email"
       notification_type: "info" | "warning" | "error"
       payment_status: "pending" | "succeeded" | "failed"
+      sms_direction: "inbound" | "outbound"
       subscription_item_type: "flat" | "per_seat" | "metered"
       subscription_status:
         | "active"
@@ -968,648 +1495,14 @@ export type Database = {
         | "incomplete"
         | "incomplete_expired"
         | "paused"
+      urgency_level: "normal" | "urgent_48h" | "urgent_24h"
+      user_type: "public" | "rpa_manager" | "healthcare_worker" | "admin"
     }
     CompositeTypes: {
       invitation: {
         email: string | null
         role: string | null
       }
-    }
-  }
-  storage: {
-    Tables: {
-      buckets: {
-        Row: {
-          allowed_mime_types: string[] | null
-          avif_autodetection: boolean | null
-          created_at: string | null
-          file_size_limit: number | null
-          id: string
-          name: string
-          owner: string | null
-          owner_id: string | null
-          public: boolean | null
-          type: Database["storage"]["Enums"]["buckettype"]
-          updated_at: string | null
-        }
-        Insert: {
-          allowed_mime_types?: string[] | null
-          avif_autodetection?: boolean | null
-          created_at?: string | null
-          file_size_limit?: number | null
-          id: string
-          name: string
-          owner?: string | null
-          owner_id?: string | null
-          public?: boolean | null
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string | null
-        }
-        Update: {
-          allowed_mime_types?: string[] | null
-          avif_autodetection?: boolean | null
-          created_at?: string | null
-          file_size_limit?: number | null
-          id?: string
-          name?: string
-          owner?: string | null
-          owner_id?: string | null
-          public?: boolean | null
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      buckets_analytics: {
-        Row: {
-          created_at: string
-          deleted_at: string | null
-          format: string
-          id: string
-          name: string
-          type: Database["storage"]["Enums"]["buckettype"]
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          deleted_at?: string | null
-          format?: string
-          id?: string
-          name: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          deleted_at?: string | null
-          format?: string
-          id?: string
-          name?: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      buckets_vectors: {
-        Row: {
-          created_at: string
-          id: string
-          type: Database["storage"]["Enums"]["buckettype"]
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      iceberg_namespaces: {
-        Row: {
-          bucket_name: string
-          catalog_id: string
-          created_at: string
-          id: string
-          metadata: Json
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          bucket_name: string
-          catalog_id: string
-          created_at?: string
-          id?: string
-          metadata?: Json
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          bucket_name?: string
-          catalog_id?: string
-          created_at?: string
-          id?: string
-          metadata?: Json
-          name?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "iceberg_namespaces_catalog_id_fkey"
-            columns: ["catalog_id"]
-            isOneToOne: false
-            referencedRelation: "buckets_analytics"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      iceberg_tables: {
-        Row: {
-          bucket_name: string
-          catalog_id: string
-          created_at: string
-          id: string
-          location: string
-          name: string
-          namespace_id: string
-          remote_table_id: string | null
-          shard_id: string | null
-          shard_key: string | null
-          updated_at: string
-        }
-        Insert: {
-          bucket_name: string
-          catalog_id: string
-          created_at?: string
-          id?: string
-          location: string
-          name: string
-          namespace_id: string
-          remote_table_id?: string | null
-          shard_id?: string | null
-          shard_key?: string | null
-          updated_at?: string
-        }
-        Update: {
-          bucket_name?: string
-          catalog_id?: string
-          created_at?: string
-          id?: string
-          location?: string
-          name?: string
-          namespace_id?: string
-          remote_table_id?: string | null
-          shard_id?: string | null
-          shard_key?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "iceberg_tables_catalog_id_fkey"
-            columns: ["catalog_id"]
-            isOneToOne: false
-            referencedRelation: "buckets_analytics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "iceberg_tables_namespace_id_fkey"
-            columns: ["namespace_id"]
-            isOneToOne: false
-            referencedRelation: "iceberg_namespaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      migrations: {
-        Row: {
-          executed_at: string | null
-          hash: string
-          id: number
-          name: string
-        }
-        Insert: {
-          executed_at?: string | null
-          hash: string
-          id: number
-          name: string
-        }
-        Update: {
-          executed_at?: string | null
-          hash?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      objects: {
-        Row: {
-          bucket_id: string | null
-          created_at: string | null
-          id: string
-          last_accessed_at: string | null
-          level: number | null
-          metadata: Json | null
-          name: string | null
-          owner: string | null
-          owner_id: string | null
-          path_tokens: string[] | null
-          updated_at: string | null
-          user_metadata: Json | null
-          version: string | null
-        }
-        Insert: {
-          bucket_id?: string | null
-          created_at?: string | null
-          id?: string
-          last_accessed_at?: string | null
-          level?: number | null
-          metadata?: Json | null
-          name?: string | null
-          owner?: string | null
-          owner_id?: string | null
-          path_tokens?: string[] | null
-          updated_at?: string | null
-          user_metadata?: Json | null
-          version?: string | null
-        }
-        Update: {
-          bucket_id?: string | null
-          created_at?: string | null
-          id?: string
-          last_accessed_at?: string | null
-          level?: number | null
-          metadata?: Json | null
-          name?: string | null
-          owner?: string | null
-          owner_id?: string | null
-          path_tokens?: string[] | null
-          updated_at?: string | null
-          user_metadata?: Json | null
-          version?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "objects_bucketId_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      prefixes: {
-        Row: {
-          bucket_id: string
-          created_at: string | null
-          level: number
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string | null
-          level?: number
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string | null
-          level?: number
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prefixes_bucketId_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      s3_multipart_uploads: {
-        Row: {
-          bucket_id: string
-          created_at: string
-          id: string
-          in_progress_size: number
-          key: string
-          owner_id: string | null
-          upload_signature: string
-          user_metadata: Json | null
-          version: string
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          id: string
-          in_progress_size?: number
-          key: string
-          owner_id?: string | null
-          upload_signature: string
-          user_metadata?: Json | null
-          version: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          id?: string
-          in_progress_size?: number
-          key?: string
-          owner_id?: string | null
-          upload_signature?: string
-          user_metadata?: Json | null
-          version?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      s3_multipart_uploads_parts: {
-        Row: {
-          bucket_id: string
-          created_at: string
-          etag: string
-          id: string
-          key: string
-          owner_id: string | null
-          part_number: number
-          size: number
-          upload_id: string
-          version: string
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          etag: string
-          id?: string
-          key: string
-          owner_id?: string | null
-          part_number: number
-          size?: number
-          upload_id: string
-          version: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          etag?: string
-          id?: string
-          key?: string
-          owner_id?: string | null
-          part_number?: number
-          size?: number
-          upload_id?: string
-          version?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
-            columns: ["upload_id"]
-            isOneToOne: false
-            referencedRelation: "s3_multipart_uploads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      vector_indexes: {
-        Row: {
-          bucket_id: string
-          created_at: string
-          data_type: string
-          dimension: number
-          distance_metric: string
-          id: string
-          metadata_configuration: Json | null
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          data_type: string
-          dimension: number
-          distance_metric: string
-          id?: string
-          metadata_configuration?: Json | null
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          data_type?: string
-          dimension?: number
-          distance_metric?: string
-          id?: string
-          metadata_configuration?: Json | null
-          name?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "vector_indexes_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets_vectors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      add_prefixes: {
-        Args: { _bucket_id: string; _name: string }
-        Returns: undefined
-      }
-      can_insert_object: {
-        Args: { bucketid: string; metadata: Json; name: string; owner: string }
-        Returns: undefined
-      }
-      delete_leaf_prefixes: {
-        Args: { bucket_ids: string[]; names: string[] }
-        Returns: undefined
-      }
-      delete_prefix: {
-        Args: { _bucket_id: string; _name: string }
-        Returns: boolean
-      }
-      extension: { Args: { name: string }; Returns: string }
-      filename: { Args: { name: string }; Returns: string }
-      foldername: { Args: { name: string }; Returns: string[] }
-      get_level: { Args: { name: string }; Returns: number }
-      get_prefix: { Args: { name: string }; Returns: string }
-      get_prefixes: { Args: { name: string }; Returns: string[] }
-      get_size_by_bucket: {
-        Args: never
-        Returns: {
-          bucket_id: string
-          size: number
-        }[]
-      }
-      list_multipart_uploads_with_delimiter: {
-        Args: {
-          bucket_id: string
-          delimiter_param: string
-          max_keys?: number
-          next_key_token?: string
-          next_upload_token?: string
-          prefix_param: string
-        }
-        Returns: {
-          created_at: string
-          id: string
-          key: string
-        }[]
-      }
-      list_objects_with_delimiter: {
-        Args: {
-          bucket_id: string
-          delimiter_param: string
-          max_keys?: number
-          next_token?: string
-          prefix_param: string
-          start_after?: string
-        }
-        Returns: {
-          id: string
-          metadata: Json
-          name: string
-          updated_at: string
-        }[]
-      }
-      lock_top_prefixes: {
-        Args: { bucket_ids: string[]; names: string[] }
-        Returns: undefined
-      }
-      operation: { Args: never; Returns: string }
-      search:
-        | {
-            Args: {
-              bucketname: string
-              levels?: number
-              limits?: number
-              offsets?: number
-              prefix: string
-            }
-            Returns: {
-              created_at: string
-              id: string
-              last_accessed_at: string
-              metadata: Json
-              name: string
-              updated_at: string
-            }[]
-          }
-        | {
-            Args: {
-              bucketname: string
-              levels?: number
-              limits?: number
-              offsets?: number
-              prefix: string
-              search?: string
-              sortcolumn?: string
-              sortorder?: string
-            }
-            Returns: {
-              created_at: string
-              id: string
-              last_accessed_at: string
-              metadata: Json
-              name: string
-              updated_at: string
-            }[]
-          }
-      search_legacy_v1: {
-        Args: {
-          bucketname: string
-          levels?: number
-          limits?: number
-          offsets?: number
-          prefix: string
-          search?: string
-          sortcolumn?: string
-          sortorder?: string
-        }
-        Returns: {
-          created_at: string
-          id: string
-          last_accessed_at: string
-          metadata: Json
-          name: string
-          updated_at: string
-        }[]
-      }
-      search_v1_optimised: {
-        Args: {
-          bucketname: string
-          levels?: number
-          limits?: number
-          offsets?: number
-          prefix: string
-          search?: string
-          sortcolumn?: string
-          sortorder?: string
-        }
-        Returns: {
-          created_at: string
-          id: string
-          last_accessed_at: string
-          metadata: Json
-          name: string
-          updated_at: string
-        }[]
-      }
-      search_v2:
-        | {
-            Args: {
-              bucket_name: string
-              levels?: number
-              limits?: number
-              prefix: string
-              start_after?: string
-            }
-            Returns: {
-              created_at: string
-              id: string
-              key: string
-              metadata: Json
-              name: string
-              updated_at: string
-            }[]
-          }
-        | {
-            Args: {
-              bucket_name: string
-              levels?: number
-              limits?: number
-              prefix: string
-              sort_column?: string
-              sort_column_after?: string
-              sort_order?: string
-              start_after?: string
-            }
-            Returns: {
-              created_at: string
-              id: string
-              key: string
-              last_accessed_at: string
-              metadata: Json
-              name: string
-              updated_at: string
-            }[]
-          }
-    }
-    Enums: {
-      buckettype: "STANDARD" | "ANALYTICS" | "VECTOR"
-    }
-    CompositeTypes: {
-      [_ in never]: never
     }
   }
 }
@@ -1732,9 +1625,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       app_permissions: [
@@ -1744,10 +1634,14 @@ export const Constants = {
         "members.manage",
         "invites.manage",
       ],
+      autonomy_level: ["autonomous", "semi_autonomous", "loss_of_independence"],
+      availability_source: ["sms", "web", "api"],
       billing_provider: ["stripe", "lemon-squeezy", "paddle"],
+      contact_type: ["call", "message", "visit_request", "urgent_broadcast"],
       notification_channel: ["in_app", "email"],
       notification_type: ["info", "warning", "error"],
       payment_status: ["pending", "succeeded", "failed"],
+      sms_direction: ["inbound", "outbound"],
       subscription_item_type: ["flat", "per_seat", "metered"],
       subscription_status: [
         "active",
@@ -1759,12 +1653,8 @@ export const Constants = {
         "incomplete_expired",
         "paused",
       ],
-    },
-  },
-  storage: {
-    Enums: {
-      buckettype: ["STANDARD", "ANALYTICS", "VECTOR"],
+      urgency_level: ["normal", "urgent_48h", "urgent_24h"],
+      user_type: ["public", "rpa_manager", "healthcare_worker", "admin"],
     },
   },
 } as const
-

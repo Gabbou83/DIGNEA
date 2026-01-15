@@ -40,7 +40,7 @@ async function AccountsPage(props: AdminAccountsPageProps) {
       <PageBody>
         <ServerDataLoader
           table={'accounts'}
-          client={client}
+          client={client as any}
           page={page}
           where={(queryBuilder) => {
             const { account_type: type, query } = searchParams;

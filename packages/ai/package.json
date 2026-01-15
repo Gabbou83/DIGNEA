@@ -1,0 +1,41 @@
+{
+  "name": "@kit/ai",
+  "private": true,
+  "version": "0.1.0",
+  "description": "DIGNEA AI package for Claude API integration, NLU, and matching algorithms",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@kit/prettier-config",
+  "exports": {
+    "./nlu-engine": "./src/nlu-engine.ts",
+    "./matching-engine": "./src/matching-engine.ts",
+    "./conversation-manager": "./src/conversation-manager.ts",
+    "./prompts/*": "./src/prompts/*.ts",
+    "./types": "./src/types.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.1",
+    "@kit/shared": "workspace:*",
+    "@kit/supabase": "workspace:*",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/tsconfig": "workspace:*",
+    "@supabase/supabase-js": "catalog:",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  }
+}

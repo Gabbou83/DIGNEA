@@ -14,7 +14,7 @@ import { createTeamAccountsApi } from '@kit/team-accounts/api';
 import appConfig from '~/config/app.config';
 import billingConfig from '~/config/billing.config';
 import pathsConfig from '~/config/paths.config';
-import { Database } from '~/lib/database.types';
+import { Database } from '@kit/supabase/database';
 
 import { TeamCheckoutSchema } from '../schema/team-billing.schema';
 

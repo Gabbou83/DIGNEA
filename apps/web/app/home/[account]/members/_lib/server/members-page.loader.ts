@@ -3,7 +3,7 @@ import 'server-only';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 import { loadTeamWorkspace } from '~/home/[account]/_lib/server/team-account-workspace.loader';
-import { Database } from '~/lib/database.types';
+import { Database } from '@kit/supabase/database';
 
 /**
  * Load data for the members page

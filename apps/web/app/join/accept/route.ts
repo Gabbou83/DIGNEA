@@ -6,7 +6,7 @@ import { getLogger } from '@kit/shared/logger';
 import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 
 import pathsConfig from '~/config/paths.config';
-import { Database } from '~/lib/database.types';
+import { Database } from '@kit/supabase/database';
 
 /**
  * @name GET

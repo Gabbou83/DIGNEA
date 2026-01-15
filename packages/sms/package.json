@@ -1,0 +1,39 @@
+{
+  "name": "@kit/sms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "DIGNEA SMS package for Twilio integration and availability updates",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@kit/prettier-config",
+  "exports": {
+    "./sms-service": "./src/sms-service.ts",
+    "./parsers": "./src/parsers.ts",
+    "./templates": "./src/templates.ts",
+    "./types": "./src/types.ts"
+  },
+  "dependencies": {
+    "@kit/shared": "workspace:*",
+    "@kit/supabase": "workspace:*",
+    "twilio": "^5.4.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/tsconfig": "workspace:*",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  }
+}

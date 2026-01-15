@@ -1,0 +1,14 @@
+{
+  "routes": {
+    "overview": "Overview",
+    "dashboard": "Dashboard",
+    "availability": "Availability",
+    "inquiries": "Inquiries",
+    "management": "Management",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Manage your availability and view inquiries"
+  }
+}

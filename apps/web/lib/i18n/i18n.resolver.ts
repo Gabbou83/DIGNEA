@@ -10,6 +10,8 @@ export async function i18nResolver(language: string, namespace: string) {
   const logger = await getLogger();
 
   try {
+    // Use relative path from this file to public/locales
+    // This path remains stable as long as the internal structure doesn't change
     const data = await import(
       `../../public/locales/${language}/${namespace}.json`
     );
