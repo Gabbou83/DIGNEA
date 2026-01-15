@@ -307,9 +307,12 @@ export function OnboardingWizard() {
                 id="availability"
                 type="number"
                 min="0"
-                max="99"
+                max="999"
                 value={rpaData.availability ?? ''}
-                onChange={(e) => setRpaData({ ...rpaData, availability: parseInt(e.target.value, 10) })}
+                onChange={(e) => {
+                  const value = e.target.value === '' ? undefined : parseInt(e.target.value, 10);
+                  setRpaData({ ...rpaData, availability: value });
+                }}
                 placeholder="Ex: 5"
                 className="text-lg"
                 required
