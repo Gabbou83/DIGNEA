@@ -13,10 +13,10 @@ async function main() {
 
   // Initialize Supabase client with environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY;
 
   if (!supabaseServiceKey) {
-    console.error('❌ Error: SUPABASE_SERVICE_KEY or SUPABASE_SECRET_KEY not found in environment');
+    console.error('❌ Error: SUPABASE_SERVICE_ROLE_KEY not found in environment');
     process.exit(1);
   }
 
