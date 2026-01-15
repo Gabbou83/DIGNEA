@@ -23,6 +23,16 @@ interface RPAData {
   availability?: number;
 }
 
+interface K10SearchResult {
+  k10_id: string;
+  name: string;
+  city?: string;
+  region?: string;
+  address?: string;
+  phone?: string;
+  relevance: number;
+}
+
 export function OnboardingWizard() {
   const router = useRouter();
   const [step, setStep] = useState<OnboardingStep>('search');
@@ -30,15 +40,57 @@ export function OnboardingWizard() {
     name: '',
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<K10SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsSearching(true);
 
-    // TODO: Search K10 registry
-    // For now, just move to manual entry
+    if (!searchQuery || searchQuery.trim().length < 2) {
+      setError('Veuillez entrer au moins 2 caracteres');
+      setIsSearching(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/k10/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: searchQuery, limit: 10 }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Recherche echouee');
+      }
+
+      const { results } = await response.json();
+
+      if (results.length === 0) {
+        setError('Aucune residence trouvee. Utilisez "Entree manuelle" pour continuer.');
+      }
+
+      setSearchResults(results);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSelectRPA = (result: K10SearchResult) => {
+    setRpaData({
+      k10_id: result.k10_id,
+      name: result.name,
+      address: result.address,
+      city: result.city,
+      region: result.region,
+      phone: result.phone,
+    });
+    setSearchResults([]);
     setStep('confirm');
   };
 
@@ -132,8 +184,8 @@ export function OnboardingWizard() {
             </div>
 
             <div className="flex gap-4">
-              <Button type="submit" className="flex-1">
-                Rechercher
+              <Button type="submit" className="flex-1" disabled={isSearching}>
+                {isSearching ? 'Recherche...' : 'Rechercher'}
               </Button>
               <Button
                 type="button"
@@ -144,6 +196,25 @@ export function OnboardingWizard() {
                 Entree manuelle
               </Button>
             </div>
+
+            {searchResults.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="font-semibold">Resultats de recherche:</h3>
+                {searchResults.map((result) => (
+                  <button
+                    key={result.k10_id}
+                    type="button"
+                    onClick={() => handleSelectRPA(result)}
+                    className="w-full rounded-lg border p-4 text-left hover:bg-accent transition-colors"
+                  >
+                    <div className="font-medium">{result.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {result.k10_id} • {result.city}, {result.region}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </form>
         )}
 
