@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "description": "Integration with Quebec K10 RPA Registry",
+  "scripts": {
+    "seed": "tsx scripts/seed-k10-direct.ts"
+  },
   "exports": {
     "./types": "./src/types.ts",
     "./parser": "./src/parser.ts",
