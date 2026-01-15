@@ -41,7 +41,7 @@ export async function loadRPADashboardData() {
   // Get RPA profile
   const { data: rpaProfile } = await client
     .from('rpa_profiles')
-    .select('id, rpa_id, sms_phone, sms_enabled')
+    .select('id, rpa_id, sms_phone, sms_enabled, sms_daily_reminder')
     .eq('id', userProfile?.profile_id || '')
     .single();
 
@@ -89,6 +89,38 @@ export async function loadRPADashboardData() {
     .eq('rpa_id', rpaProfile.rpa_id)
     .gte('created_at', thirtyDaysAgo.toISOString());
 
+  // Get count of responded inquiries
+  const { count: respondedInquiries } = await client
+    .from('contacts')
+    .select('*', { count: 'exact', head: true })
+    .eq('rpa_id', rpaProfile.rpa_id)
+    .gte('created_at', thirtyDaysAgo.toISOString())
+    .not('responded_at', 'is', null);
+
+  // Calculate response rate (percentage)
+  const responseRate =
+    totalInquiries && totalInquiries > 0
+      ? Math.round((respondedInquiries || 0) / totalInquiries * 100)
+      : 0;
+
+  // Get average response time
+  const { data: responseTimeData } = await client
+    .from('contacts')
+    .select('response_time_minutes')
+    .eq('rpa_id', rpaProfile.rpa_id)
+    .gte('created_at', thirtyDaysAgo.toISOString())
+    .not('response_time_minutes', 'is', null);
+
+  // Calculate average response time in minutes
+  let avgResponseTime = 0;
+  if (responseTimeData && responseTimeData.length > 0) {
+    const totalMinutes = responseTimeData.reduce(
+      (sum, item) => sum + (item.response_time_minutes || 0),
+      0,
+    );
+    avgResponseTime = Math.round(totalMinutes / responseTimeData.length);
+  }
+
   return {
     hasRPA: true,
     rpa,
@@ -97,8 +129,8 @@ export async function loadRPADashboardData() {
     inquiries: inquiries || [],
     stats: {
       totalInquiries: totalInquiries || 0,
-      responseRate: 0, // TODO: Calculate from responded vs total
-      avgResponseTime: 0, // TODO: Calculate from contacts data
+      responseRate,
+      avgResponseTime,
     },
   };
 }
