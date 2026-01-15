@@ -21,6 +21,21 @@ export const loadUserWorkspace = cache(workspaceLoader);
 
 async function workspaceLoader() {
   const client = getSupabaseServerClient();
+  const user = await requireUserInServerComponent();
+
+  // Check if user has completed RPA onboarding
+  const { data: rpaProfile } = await client
+    .from('rpa_profiles')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+
+  // Redirect to onboarding if no RPA profile exists
+  if (!rpaProfile) {
+    const { redirect } = await import('next/navigation');
+    redirect('/rpa/onboarding');
+  }
+
   const api = createAccountsApi(client);
 
   const accountsPromise = shouldLoadAccounts
@@ -29,10 +44,9 @@ async function workspaceLoader() {
 
   const workspacePromise = api.getAccountWorkspace();
 
-  const [accounts, workspace, user] = await Promise.all([
+  const [accounts, workspace] = await Promise.all([
     accountsPromise(),
     workspacePromise,
-    requireUserInServerComponent(),
   ]);
 
   // Check if user can create team accounts (policy check)
