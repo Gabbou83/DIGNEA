@@ -1,0 +1,20 @@
+{
+  "name": "@kit/k10",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Integration with Quebec K10 RPA Registry",
+  "exports": {
+    "./types": "./src/types.ts"
+  },
+  "dependencies": {
+    "@kit/supabase": "workspace:*",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@kit/eslint-config": "workspace:*",
+    "@kit/prettier-config": "workspace:*",
+    "@kit/tsconfig": "workspace:*",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3"
+  }
+}
