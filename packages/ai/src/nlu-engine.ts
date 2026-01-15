@@ -16,7 +16,7 @@ import type {
 
 export class NLUEngine {
   private client: Anthropic;
-  private model = 'claude-3-5-sonnet-20241022';
+  private model = 'claude-3-5-haiku-latest';
 
   constructor(apiKey?: string) {
     this.client = new Anthropic({
