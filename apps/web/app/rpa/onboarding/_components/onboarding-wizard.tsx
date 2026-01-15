@@ -183,6 +183,12 @@ export function OnboardingWizard() {
               />
             </div>
 
+            {error && (
+              <div className="rounded-md bg-destructive/10 p-4 text-sm text-destructive">
+                {error}
+              </div>
+            )}
+
             <div className="flex gap-4">
               <Button type="submit" className="flex-1" disabled={isSearching}>
                 {isSearching ? 'Recherche...' : 'Rechercher'}
