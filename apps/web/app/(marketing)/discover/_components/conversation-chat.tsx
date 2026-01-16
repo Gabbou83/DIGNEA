@@ -230,19 +230,22 @@ export function ConversationChat() {
                   Âge: {patientProfile.age} ans
                 </span>
               )}
-              {patientProfile.budget && (
+              {patientProfile.budget?.amount && (
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs">
-                  Budget: {patientProfile.budget}$/mois
+                  Budget: {patientProfile.budget.amount}$/mois
                 </span>
               )}
-              {patientProfile.location && (
+              {(patientProfile.location?.city ||
+                patientProfile.location?.region) && (
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs">
-                  Région: {patientProfile.location}
+                  Région:{' '}
+                  {patientProfile.location.city ||
+                    patientProfile.location.region}
                 </span>
               )}
-              {patientProfile.care_level && (
+              {patientProfile.autonomy && (
                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs">
-                  Soins: {patientProfile.care_level}
+                  Autonomie: {patientProfile.autonomy}
                 </span>
               )}
             </div>
