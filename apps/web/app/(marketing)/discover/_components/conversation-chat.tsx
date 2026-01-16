@@ -8,6 +8,7 @@ import { Send, Loader2 } from 'lucide-react';
 
 import { ChatMessage } from './chat-message';
 import { ResultsList } from './results-list';
+import { ContactFormModal } from './contact-form-modal';
 
 interface Message {
   id: string;
@@ -44,6 +45,10 @@ export function ConversationChat() {
   const [matches, setMatches] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [selectedRpasForContact, setSelectedRpasForContact] = useState<any[]>(
+    [],
+  );
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -180,11 +185,17 @@ export function ConversationChat() {
   };
 
   const handleContactMultiple = (rpaIds: string[]) => {
-    // TODO: Implement contact form modal
-    console.log('Contact RPAs:', rpaIds);
-    toast.info('Formulaire de contact', {
-      description: `Fonctionnalité en développement pour contacter ${rpaIds.length} résidence(s)`,
-    });
+    // Find the selected RPAs from matches
+    const selectedRpas = matches
+      .filter((match) => rpaIds.includes(match.rpa_id))
+      .map((match) => ({
+        rpa_id: match.rpa_id,
+        name: match.rpa_info.name,
+        city: match.rpa_info.city,
+      }));
+
+    setSelectedRpasForContact(selectedRpas);
+    setContactModalOpen(true);
   };
 
   return (
@@ -323,6 +334,14 @@ export function ConversationChat() {
           )}
         </div>
       )}
+
+      {/* Contact Form Modal */}
+      <ContactFormModal
+        open={contactModalOpen}
+        onOpenChange={setContactModalOpen}
+        selectedRpas={selectedRpasForContact}
+        patientProfile={patientProfile}
+      />
     </div>
   );
 }
